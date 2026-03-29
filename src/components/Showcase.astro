@@ -1,0 +1,299 @@
+---
+import type { ContentItem } from "../data/content";
+
+interface Props {
+  items: ContentItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="app-shell">
+  <div class="showcase-card">
+    <div class="title-bar">
+      <span>SINKINGSHIP MEDIA PLAYER</span>
+    </div>
+
+    <div class="viewer-area">
+      <div class="viewer-center">
+        <img id="showcase-image" class="media-hidden" src="" alt="" />
+
+        <video id="showcase-video" class="media-hidden" controls playsinline>
+          <source src="" type="video/mp4" />
+          Your browser does not support video.
+        </video>
+
+        <div id="showcase-game" class="media-hidden game-box">
+          GAME AREA
+        </div>
+
+        <div id="empty-state" class="media-hidden empty-state">
+          NO MEDIA FOUND
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ items }}>
+  const imageEl = document.getElementById("showcase-image");
+  const videoEl = document.getElementById("showcase-video");
+  const videoSourceEl = videoEl?.querySelector("source");
+  const gameEl = document.getElementById("showcase-game");
+  const emptyEl = document.getElementById("empty-state");
+
+  let lastItem = null;
+
+  function fadeTo(elementToShow) {
+    const elements = [imageEl, videoEl, gameEl, emptyEl];
+
+    elements.forEach((el) => {
+      if (!el) return;
+      el.classList.remove("media-visible");
+      el.classList.add("media-hidden");
+    });
+
+    if (elementToShow) {
+      elementToShow.classList.remove("media-hidden");
+      elementToShow.classList.add("media-visible");
+    }
+  }
+
+  function getRandomFromType(type) {
+    const filtered = items.filter((item) => item.type === type);
+    if (!filtered.length) return null;
+
+    let next;
+    do {
+      next = filtered[Math.floor(Math.random() * filtered.length)];
+    } while (filtered.length > 1 && next === lastItem);
+
+    lastItem = next;
+    return next;
+  }
+
+  function getRandomAny() {
+    if (!items.length) return null;
+
+    let next;
+    do {
+      next = items[Math.floor(Math.random() * items.length)];
+    } while (items.length > 1 && next === lastItem);
+
+    lastItem = next;
+    return next;
+  }
+
+  function renderItem(item) {
+    if (!item) {
+      fadeTo(emptyEl);
+      return;
+    }
+
+    if (item.type === "gif" || item.type === "pic-meme") {
+      if (imageEl) {
+        imageEl.src = item.src;
+        imageEl.alt = "";
+        fadeTo(imageEl);
+      }
+      return;
+    }
+
+    if (item.type === "video") {
+      if (videoEl && videoSourceEl) {
+        videoSourceEl.src = item.src;
+        videoSourceEl.setAttribute(
+          "type",
+          item.src.toLowerCase().endsWith(".mov") ? "video/quicktime" : "video/mp4"
+        );
+
+        videoEl.load();
+        fadeTo(videoEl);
+
+        setTimeout(() => {
+          videoEl.play().catch(() => {});
+        }, 50);
+      }
+      return;
+    }
+
+    if (item.type === "game") {
+      fadeTo(gameEl);
+      return;
+    }
+
+    fadeTo(emptyEl);
+  }
+
+  function handleSelection(type) {
+    let selected = null;
+
+    if (type === "gif") selected = getRandomFromType("gif");
+    else if (type === "video") selected = getRandomFromType("video");
+    else if (type === "pic-meme") selected = getRandomFromType("pic-meme");
+    else if (type === "random") selected = getRandomAny();
+    else if (type === "game") selected = getRandomFromType("game");
+
+    renderItem(selected);
+  }
+
+  window.addEventListener("content-switch", (event) => {
+    handleSelection(event.detail);
+  });
+
+  handleSelection("random");
+</script>
+
+<style>
+  .app-shell {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .showcase-card {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: 44px minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+    border: 3px solid #1f3f6d;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #d9ecff 0%, #8eb7e3 45%, #6f97c4 100%);
+    box-shadow:
+      0 0 0 2px #cfe7ff inset,
+      0 0 0 4px #5a83b0 inset,
+      0 20px 35px rgba(9, 32, 68, 0.25);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .title-bar {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border: 2px solid #244b7f;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #2e77c8 0%, #1a4f96 100%);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .viewer-area {
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    border: 3px solid #305888;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #ebf6ff 100%);
+    overflow: hidden;
+    padding: 16px;
+    box-shadow:
+      inset 0 0 0 2px #ffffff,
+      inset 0 0 18px rgba(122, 179, 237, 0.18);
+    box-sizing: border-box;
+  }
+
+  .viewer-center {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .viewer-center > * {
+    justify-self: center;
+    align-self: center;
+  }
+
+  .media-visible {
+    display: block !important;
+  }
+
+  .media-hidden {
+    display: none !important;
+  }
+
+  #showcase-game.media-visible {
+    display: flex !important;
+  }
+
+  #showcase-image,
+  .game-box,
+  .empty-state {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  #showcase-image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  }
+
+  #showcase-video {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  }
+
+  .game-box {
+    width: min(100%, 720px);
+    height: min(100%, 420px);
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #315b8c;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #dceeff 0%, #a8ccef 100%);
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: inset 0 0 0 2px #fff;
+  }
+
+  .empty-state {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #23466e;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .showcase-card {
+      padding: 8px;
+      border-radius: 14px;
+      grid-template-rows: 38px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .title-bar {
+      min-height: 38px;
+      font-size: 10px;
+      padding: 0 10px;
+    }
+
+    .viewer-area {
+      padding: 10px;
+      border-radius: 12px;
+    }
+  }
+</style>

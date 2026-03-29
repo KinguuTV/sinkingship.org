@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.media-visible {
+  display: block;
+  max-width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 18px;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+.media-hidden {
+  display: none;
+  opacity: 0;
+}
+
+.site-bg {
+  min-height: 100vh;
+  color: #111;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, #dff3ff 0%, #b8d8f5 35%, #8eb6dc 70%, #6f97c4 100%);
+}
+
+.top-banner {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto 14px;
+  padding: 8px;
+  border: 3px solid #244b7f;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f7fbff 0%, #cfe7ff 100%);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+.marquee-wrap {
+  border: 2px solid #3d6493;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #2d74c4 0%, #184b8e 100%);
+  color: white;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.app-root {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(circle at top, #dff3ff 0%, #b8d8f5 35%, #8eb6dc 70%, #6f97c4 100%);
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+
+/* MAIN APP FRAME */
+.app-container {
+  width: 100%;
+  max-width: 900px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CONTENT AREA (TOP) */
+.app-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* BUTTON BAR (BOTTOM FIXED INSIDE APP) */
+.app-bottom {
+  height: 120px;
+  flex-shrink: 0;
+}

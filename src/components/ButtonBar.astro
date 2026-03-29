@@ -1,0 +1,111 @@
+<section class="button-wrap">
+  <div class="button-grid">
+    <button class="media-btn" data-type="gif">GIF</button>
+    <button class="media-btn" data-type="video">VIDEO</button>
+    <button class="media-btn" data-type="pic-meme">PIC MEME</button>
+    <button class="media-btn" data-type="game">GAME</button>
+    <button class="media-btn active-btn" data-type="random">RANDOM</button>
+  </div>
+</section>
+
+<script is:inline>
+  window.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll(".media-btn");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const type = button.getAttribute("data-type");
+
+        buttons.forEach((btn) => btn.classList.remove("active-btn"));
+        button.classList.add("active-btn");
+
+        window.dispatchEvent(
+          new CustomEvent("content-switch", {
+            detail: type,
+          })
+        );
+      });
+    });
+  });
+</script>
+
+<style>
+  .button-wrap {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    padding: 10px;
+    border: 3px solid #1f3f6d;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #d7ebff 0%, #88b2de 55%, #7098c5 100%);
+    box-shadow:
+      0 0 0 2px #dff0ff inset,
+      0 0 0 4px #5c86b4 inset,
+      0 14px 28px rgba(8, 32, 66, 0.22);
+    box-sizing: border-box;
+  }
+
+  .button-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    align-items: center;
+    justify-items: stretch;
+  }
+
+  .media-btn {
+    width: 100%;
+    min-height: 74px;
+    border: 2px solid #284f82;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #dceeff 25%, #9ec5eb 65%, #79a7d6 100%);
+    color: #12345d;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow:
+      inset 0 2px 0 #fff,
+      inset 0 -2px 0 rgba(0, 0, 0, 0.12),
+      0 4px 8px rgba(0, 0, 0, 0.12);
+    transition: transform 0.12s ease, filter 0.12s ease;
+    box-sizing: border-box;
+  }
+
+  .media-btn:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+
+  .media-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+      inset 0 3px 6px rgba(0, 0, 0, 0.18),
+      0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .active-btn {
+    background: linear-gradient(180deg, #8cb6e3 0%, #6f98c8 100%);
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .button-wrap {
+      padding: 8px;
+      border-radius: 14px;
+    }
+
+    .button-grid {
+      gap: 8px;
+    }
+
+    .media-btn {
+      min-height: 58px;
+      font-size: 0.62rem;
+      border-radius: 12px;
+      padding: 6px;
+    }
+  }
+</style>
