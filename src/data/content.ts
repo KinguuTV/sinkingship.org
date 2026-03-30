@@ -8,7 +8,7 @@ export interface ContentItem {
   src: string;
 }
 
-const files = import.meta.glob("../media/*.{gif,png,jpg,jpeg,mp4,mov}", {
+const files = import.meta.glob("../Media/*.{gif,png,jpg,jpeg,mp4,mov}", {
   eager: true,
   query: "?url",
   import: "default",
